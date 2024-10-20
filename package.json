@@ -1,0 +1,18 @@
+{
+  "name": "todate_server",
+  "version": "1.0.0",
+  "description": "this is a todate server",
+  "main": "./app.js",
+  "scripts": {
+    "test": "node app.js"
+  },
+  "author": "Mohammed Qurany Ibrahim",
+  "license": "ISC",
+  "dependencies": {
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.7.7",
+    "body-parser": "^1.20.3",
+    "express": "^4.21.1",
+    "nodemon": "^3.1.7"
+  }
+}
