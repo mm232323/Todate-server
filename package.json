@@ -4,7 +4,9 @@
   "description": "this is a todate server",
   "main": "./app.js",
   "scripts": {
-    "test": "node app.js"
+    "test": "node ./dist/app.js",
+    "start": "nodemon ./dist/app.js",
+    "convert": "npx tsc app.ts --watch"
   },
   "author": "Mohammed Qurany Ibrahim",
   "license": "ISC",
