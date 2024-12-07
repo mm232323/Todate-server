@@ -4,8 +4,9 @@
   "description": "this is a todate server",
   "main": "./index.js",
   "scripts": {
-    "test": "node index.js",
-    "start": "nodemon index.js"
+    "test": "nodemon index.js",
+    "start": "node index.js",
+    "build": "npm install"
   },
   "author": "Mohammed Qurany Ibrahim",
   "license": "ISC",
