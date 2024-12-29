@@ -1,22 +1,18 @@
-const express = require("express");
+import express from "express";
+import path from "path";
+import multer from "multer";
+import db from "../util/db";
 
 const router = express.Router();
 
-const db = require("../util/db");
-
 const contacts = db.collection("Contacts");
-
 const users = db.collection("Users");
 
-const path = require("path");
-
-const multer = require("multer");
-
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
+  destination: (_, __, cb) => {
     cb(null, path.join(__dirname, "../output"));
   },
-  filename: (req, file, cb) => {
+  filename: (_, file, cb) => {
     cb(null, file.fieldname + "--" + Date.now() + ".jpg");
   },
 });
@@ -28,36 +24,32 @@ const upload = multer({
   },
 });
 
-router.post("/contact", async (req, res, next) => {
+router.post("/contact", async (req, res) => {
   const contactMes = req.body.contactMes;
   await contacts.insertOne(contactMes);
   res.json({ message: "contact message sent successfully 🙂 🙂 🙂" });
 });
 
-router.post(
-  "/set-avatar/:email",
-  upload.single("image"),
-  async (req, res, next) => {
-    const email = req.params.email;
-    const avatar = req.file;
-    await users.updateOne({ email }, { $set: { avatarName: avatar.filename } });
-    return res.send(JSON.stringify({ message: "THE AVATAR CHANGED😊" }));
-  }
-);
+router.post("/set-avatar/:email", upload.single("image"), async (req, res) => {
+  const email = req.params.email;
+  const avatar = req.file;
+  await users.updateOne({ email }, { $set: { avatarName: avatar.filename } });
+  return res.send(JSON.stringify({ message: "THE AVATAR CHANGED😊" }));
+});
 
-router.get("/get-avatar/:email", async (req, res, next) => {
+router.get("/get-avatar/:email", async (req, res) => {
   const email = req.params.email;
   const user = await users.findOne({ email });
   res.json({ avatar: user.avatarName });
 });
 
-router.get("/get-user/:email", async (req, res, next) => {
+router.get("/get-user/:email", async (req, res) => {
   const email = req.params.email;
   const user = await users.findOne({ email });
   res.json(user);
 });
 
-router.post("/update-props", async (req, res, next) => {
+router.post("/update-props", async (req, res) => {
   const props = req.body.props;
   const email = props.email;
   await users.updateOne(
@@ -74,7 +66,7 @@ router.post("/update-props", async (req, res, next) => {
   res.json({ message: "user updated successfully 🌝 🌝 🌝" });
 });
 
-router.post("/create-todo", async (req, res, next) => {
+router.post("/create-todo", async (req, res) => {
   const email = req.body.email;
   const todo = req.body.todo;
   const user = await users.findOne({ email });
@@ -84,7 +76,7 @@ router.post("/create-todo", async (req, res, next) => {
   res.json({ message: "todo added successfully 📔 📔 📔" });
 });
 
-router.post("/create-mission", async (req, res, next) => {
+router.post("/create-mission", async (req, res) => {
   const email = req.body.email;
   const mission = req.body.mission;
   const user = await users.findOne({ email });
@@ -94,7 +86,7 @@ router.post("/create-mission", async (req, res, next) => {
   res.json({ message: "mission added successfully 📔 📔 📔" });
 });
 
-router.post("/create-quant", async (req, res, next) => {
+router.post("/create-quant", async (req, res) => {
   const email = req.body.email;
   const quantity = req.body.quantity;
   const user = await users.findOne({ email });
@@ -104,14 +96,14 @@ router.post("/create-quant", async (req, res, next) => {
   res.json({ message: "quantity added successfully 📔 📔 📔" });
 });
 
-router.post("/get-tasks", async (req, res, next) => {
+router.post("/get-tasks", async (req, res) => {
   const email = req.body.email;
   const user = await users.findOne({ email });
   const tasks = user.dailies;
   res.json(tasks);
 });
 
-router.post("/set-todo-statue", async (req, res, next) => {
+router.post("/set-todo-statue", async (req, res) => {
   const email = req.body.email;
   const todoID = req.body.todoId;
   const statue = req.body.statue;
@@ -124,7 +116,7 @@ router.post("/set-todo-statue", async (req, res, next) => {
   res.json({ message: "todo statue changed successfully" });
 });
 
-router.post("/handle-quant-comp", async (req, res, next) => {
+router.post("/handle-quant-comp", async (req, res) => {
   const email = req.body.email;
   const quantId = req.body.quantId;
   const increaser = req.body.increaser;
@@ -139,7 +131,7 @@ router.post("/handle-quant-comp", async (req, res, next) => {
   res.json({ message: "quant handled successfully 😃 😃 😃" });
 });
 
-router.post("/remove-mission", async (req, res, next) => {
+router.post("/remove-mission", async (req, res) => {
   const email = req.body.email;
   const missionId = req.body.mission_id;
   const user = await users.findOne({ email });
@@ -151,7 +143,7 @@ router.post("/remove-mission", async (req, res, next) => {
   res.json({ message: "mission removed successfully 😃 😃 😃" });
 });
 
-router.post("/update-mission", async (req, res, next) => {
+router.post("/update-mission", async (req, res) => {
   const { updatedMission, missionId, email } = req.body;
   const user = await users.findOne({ email });
   user.dailies.missions = user.dailies.missions.map((mission) =>
@@ -162,4 +154,4 @@ router.post("/update-mission", async (req, res, next) => {
   res.json({ message: "mission updated successfully 😄 😄 😄" });
 });
 
-module.exports = router;
+export default router;
