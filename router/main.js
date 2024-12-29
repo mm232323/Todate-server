@@ -152,9 +152,7 @@ router.post("/remove-mission", async (req, res, next) => {
 });
 
 router.post("/update-mission", async (req, res, next) => {
-  const updatedMission = req.body.updatedMission;
-  const missionId = req.body.missionId;
-  const email = req.body.email;
+  const { updatedMission, missionId, email } = req.body;
   const user = await users.findOne({ email });
   user.dailies.missions = user.dailies.missions.map((mission) =>
     mission.mission_id === missionId ? updatedMission : mission
